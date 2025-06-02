@@ -1,1 +1,7 @@
 .Django-qMYUOuKV/
+.env
+*.log
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
