@@ -7,9 +7,6 @@ FROM python:${PYTHON_VERSION}
 ENV PYTHONDONTWRITEBYTECODE 1
 ENV PYTHONUNBUFFERED 1
 
-# Create a virtual environment
-pipenv install --system
-
 # Install os dependencies for our mini vm
 RUN apt-get update \
     && apt-get install -y --no-install-recommends \
