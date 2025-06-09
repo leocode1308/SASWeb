@@ -28,7 +28,10 @@ WORKDIR /app
 
 # Copia el archivo de requisitos al directorio de trabajo
 COPY requirements.txt /app/requirements.txt
-RUN pip install -r /app/requirements.txt
+
+# Install pipenv first, then use it
+RUN pip install --no-cache-dir pipenv \
+    && pipenv install --system --skip-lock
 
 # copy the project code into the container's working directory
 COPY ./app /app
