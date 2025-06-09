@@ -3,23 +3,24 @@
 ARG PYTHON_VERSION=3.12-slim-bullseye
 FROM python:${PYTHON_VERSION}
 
-# Create a virtual environment
-pipenv install --system
-
 # Set Python-related environment variables
 ENV PYTHONDONTWRITEBYTECODE 1
 ENV PYTHONUNBUFFERED 1
 
+# Create a virtual environment
+pipenv install --system
+
 # Install os dependencies for our mini vm
-RUN apt-get update && apt-get install -y \
-    # for postgres
-    libpq-dev \
-    # for Pillow
-    libjpeg-dev \
-    # for CairoSVG
-    libcairo2 \
-    # other
-    gcc \
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends \
+        # for postgres
+        libpq-dev \
+        # for Pillow
+        libjpeg-dev \
+        # for CairoSVG
+        libcairo2 \
+        # other
+        gcc \
     && rm -rf /var/lib/apt/lists/*
 
 # Create the mini vm's code directory
