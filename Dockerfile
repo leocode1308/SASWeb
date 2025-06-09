@@ -23,8 +23,8 @@ RUN apt-get update \
 # Create the mini vm's code directory
 WORKDIR /app
 
-# Copia el archivo de requisitos al directorio de trabajo
-COPY requirements.txt /app/requirements.txt
+# Copia los archivos de Pipenv al directorio de trabajo
+COPY Pipfile* /app/
 
 # Install pipenv first, then use it
 RUN pip install --no-cache-dir pipenv \
