@@ -11,6 +11,9 @@ pylint = "*"
 pylint-django = "*"
 pylint-celery = "*"
 gunicorn = "*"
+python-decouple = "*"
+psycopg = {extras = ["binary"], version = "*"}
+dj-database-url = "*"
 
 [dev-packages]
 
