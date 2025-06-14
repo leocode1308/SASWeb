@@ -1,0 +1,21 @@
+{% extends "app/base.html" %}
+
+{% block content %}
+    <h1>Welcome to the testing page, aca estoy</h1>
+    <h1>Request Method</h1>
+    {{ request.method }} 
+    <h1>Request Path</h1>
+    {{ request.path }}
+    <h1>Request User Is Authenticated</h1>
+    {{ request.user.is_authenticated }} 
+    <h1>Request User</h1>
+    {{ request.user }}
+    <h1>Request User: username </h1>
+    {{ request.user.username }}
+    <h1>Request User: mail </h1>
+    {{ request.user.email }}
+    <p> Numero de veces en que la pagina ha sido visitada: {{ page_visits_count }} </p>
+    <p> Numero de visitas totales {{total_visits_count}} </p>
+    <p> Porcentaje de visitas: {{percent}} </p>
+{% endblock %}
+{% load static %}
