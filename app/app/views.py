@@ -4,7 +4,10 @@ from visits.models import PageVisits
 #import request
 
 
-def home_page_view(request, *args, **kwargs):
+def home_view(request, *args, **kwargs):
+    return about_view(request, *args, **kwargs)
+
+def about_view(request, *args, **kwargs):
     """
     Render the home page.
     """
@@ -16,7 +19,7 @@ def home_page_view(request, *args, **kwargs):
         "percent": (page_qs.count() / qs.count()) * 100 if qs.count() > 0 else 0,
     }
     path = request.path
-    print("qs:", qs, type(qs))
+    #print("qs:", qs, type(qs))
     PageVisits.objects.create(path=request.path)
     html_template = "app/index.html"
     return render(request, html_template, my_context)

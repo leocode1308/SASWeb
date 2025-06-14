@@ -6,3 +6,7 @@ __pycache__/
 *.pyo
 *.pyd
 test.txt
+# Ignore static files
+app/staticfiles/vendors
+# Ignore local static files root
+local-cdn/

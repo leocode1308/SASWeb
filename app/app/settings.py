@@ -102,7 +102,7 @@ if DATABASE_URL is not None:
 
     DATABASES = {'default': dj_database_url.config(
                     default=DATABASE_URL,
-                    conn_max_age = 30,
+                    conn_max_age = CONN_MAX_AGE, # 30,
                     conn_health_checks = True
                 )
             }
@@ -142,10 +142,21 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/5.2/howto/static-files/
 
 STATIC_URL = 'static/'
+STATICFILES_BASE_DIR = BASE_DIR/ 'staticfiles'
+STATICFILES_VENDOR_DIR = STATICFILES_BASE_DIR /'vendors'
+
+# source for python manage.py collectstatic
+STATICFILES_DIRS = [
+    STATICFILES_BASE_DIR 
+]
 
 # Define STATIC_ROOT para collectstatic
 # Este será el directorio donde Docker copiará todos tus archivos estáticos
-STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+STATIC_ROOT = BASE_DIR.parent / 'local-cdn' #os.path.join(BASE_DIR, 'staticfiles')
+
+if not DEBUG:
+    STATIC_ROOT = BASE_DIR / 'prod-cdn'
+    
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
