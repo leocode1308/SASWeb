@@ -11,24 +11,12 @@ def user_subscription_view(request):
     _user_sub_obj, created = UserSubscription.objects.get_or_create(user=request.user)
     if request.method == "POST":
         print("refresh sub")
-        finished = subs_utils.refresh_active_users_subscriptions(user_ids=[request.user.id])   
+        finished = subs_utils.refresh_active_users_subscriptions(user_ids=[request.user.id], active_only=False)  
         if finished:
             messages.success(request, "Your subscription has been refreshed successfully.")
         else:
             messages.error(request, "There was an error refreshing your subscription.Please try again.")
         return redirect(_user_sub_obj.get_absolute_url())
-
-    """
-    if request.method == "POST":
-        print("refresh sub")
-        finished = subs_utils.refresh_active_users_subscriptions(user_ids=[request.user.id], active_only=False)
-        if finished:
-            messages.success(request, "Your subscription has been refreshed successfully.")
-        else:
-            messages.error(request, "There was an error refreshing your subscription.Please try again.")
-        return redirect(_user_sub_obj.get_absolute_url())
-    """
-    
     return render(request, 'subscriptions/user_detail_view.html', {"subscription": _user_sub_obj})
 
 @login_required

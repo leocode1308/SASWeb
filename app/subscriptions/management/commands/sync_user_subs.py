@@ -28,13 +28,11 @@ class Command(BaseCommand):
         else:
             
             print("Sync active subs")
-            done = subs_utils.refresh_active_users_subscriptions(
-                active_only=True, 
+            done = subs_utils.refresh_active_users_subscriptions(active_only=True, 
                 days_left=days_left,
                 days_ago=days_ago,
                 day_start=day_start,
                 day_end=day_end,
-                verbose=True
-                )
+                verbose=True)
             if done:
                 print("Done")
