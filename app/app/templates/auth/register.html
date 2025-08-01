@@ -1,0 +1,17 @@
+{% extends "app/base.html" %}
+
+{% block content %}
+    <form method = "POST" action="/register/">
+
+        <input type="text" name="username" placeholder="Username" required />
+        <input type="email" name="email" placeholder="Email" required />
+        <input type="password" name="password" placeholder="Password" required />
+
+        {% csrf_token %} 
+
+        <button type="submit">Register</button>
+
+    </form>
+
+{% endblock %}
+{% load static %}

@@ -1,0 +1,29 @@
+{% extends "app/base.html" %}
+
+{% block content %}
+
+<h1>Checkout Success</h1>
+<p>Thank you for your purchase!</p>
+<p>Your subscription details are as follows:</p>
+
+<div>
+
+    <h2>Subscription Details</h2>
+    <p>Start Date: {{ subscription.current_period_start }}</p>
+    <p>End Date: {{ subscription.current_period_end }}</p>
+    <p>Status: {{ subscription.status }}</p>
+    <p>Price: {{ subscription.price }} {{ subscription.currency }}</p>
+
+    <h2>Checkout Information</h2>
+
+    {{ checkout }}
+
+    <h2>Subscription Information</h2>
+
+    {{ subscription }}
+
+</div>
+
+
+{% endblock %}
+{% load static %}

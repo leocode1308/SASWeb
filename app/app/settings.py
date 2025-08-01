@@ -19,6 +19,29 @@ from decouple import config
 BASE_DIR = Path(__file__).resolve().parent.parent
 print("BASE_DIR", BASE_DIR)
 
+EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
+EMAIL_HOST = config("EMAIL_HOST", cast = str, default="smtp.gmail.com")
+EMAIL_PORT= config("EMAIL_PORT", cast = str, default="587")
+ 
+EMAIL_HOST_USER = config("EMAIL_HOST_USER", cast = str, default = None)
+EMAIL_HOST_PASSWORD = config("EMAIL_HOST_PASSWORD", cast = str, default = None) 
+
+EMAIL_USE_TLS = config("EMAIL_USE_TLS", cast=bool, default=False)
+EMAIL_USE_SSL = config("EMAIL_USE_SSL", cast=bool, default=False)
+
+ADMIN_USER_NAME = config("ADMIN_USER_NAME", default = "No Admin")
+ADMIN_USER_EMAIL = config("ADMIN_USER_EMAIL", default = None)
+
+ADMINS = []
+MANAGERS = []
+
+if all([ADMIN_USER_NAME, ADMIN_USER_EMAIL]):
+    ADMINS += [
+        (f'{ADMIN_USER_NAME}', f'{ADMIN_USER_EMAIL}')
+    ]
+
+MANAGERS = ADMINS
+
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.2/howto/deployment/checklist/
@@ -31,7 +54,8 @@ SECRET_KEY = config('DJANGO_SECRET_KEY', default='algun-valor-secreto-temporal-p
 DEBUG = config('DJANGO_DEBUG', default=False, cast=bool)
 print("DEBUG", DEBUG, type(DEBUG))
 
-
+SITE_ID = 1
+BASE_URL = config("BASE_URL", default=None)
 ALLOWED_HOSTS = [
     ".railway.app" #https://sasweb.prod.railway.app
 ]
@@ -51,17 +75,36 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django.contrib.sites',  # Necesario para django-allauth
+    # Apps Propias
     'visits',
+    'comando',
+    'app',  # Asegúrate de que tu aplicación principal esté aquí
+    'profiles',
+    'subscriptions',
+    'customers',
+    # third party app
+    "allauth_ui", 
+    'allauth', # third party app
+    'allauth.account', # third party app
+    'allauth.socialaccount', # third party app
+    "allauth.socialaccount.providers.github", # third party app
+    "widget_tweaks", # third party app
+    "slippers", # third party app
 ]
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    "whitenoise.middleware.WhiteNoiseMiddleware",
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
+    # Allauth:
+    "allauth.account.middleware.AccountMiddleware",
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+
 ]
 
 ROOT_URLCONF = 'app.urls'
@@ -97,6 +140,7 @@ DATABASES = {
 CONN_MAX_AGE = config('CONN_MAX_AGE', cast=int, default=30)
 DATABASE_URL = config('DATABASE_URL', default='sqlite:///db.sqlite3', cast=str)
 
+
 if DATABASE_URL is not None:
     import dj_database_url
 
@@ -106,6 +150,7 @@ if DATABASE_URL is not None:
                     conn_health_checks = True
                 )
             }
+
 
 # Password validation
 # https://docs.djangoproject.com/en/5.2/ref/settings/#auth-password-validators
@@ -125,6 +170,20 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+LOGIN_REDIRECT_URL = '/'  # Redirect to home after login
+ACCOUNT_AUTHENTICATION_METHOD = 'username_email'
+ACCOUNT_EMAIL_REQUIRED = "mandatory"
+ACCOUNT_EMAIL_REQUIRED = True
+# Django Allauth:
+AUTHENTICATION_BACKENDS = [
+    # Needed to login by username in Django admin, regardless of `allauth`
+    'django.contrib.auth.backends.ModelBackend',
+
+    # `allauth` specific authentication methods, such as login by email
+    'allauth.account.auth_backends.AuthenticationBackend',
+
+]
+
 
 # Internationalization
 # https://docs.djangoproject.com/en/5.2/topics/i18n/
@@ -137,12 +196,21 @@ USE_I18N = True
 
 USE_TZ = True
 
+# Provider specific settings
+SOCIALACCOUNT_PROVIDERS = {
+    "github": {
+        "VERIFIED_EMAIL": True  # Ensure that the email is verified
+    }
+
+}
+
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.2/howto/static-files/
 
 STATIC_URL = 'static/'
 STATICFILES_BASE_DIR = BASE_DIR/ 'staticfiles'
+STATICFILES_BASE_DIR.mkdir(exist_ok=True, parents=True)  # Ensure the directory exists
 STATICFILES_VENDOR_DIR = STATICFILES_BASE_DIR /'vendors'
 
 # source for python manage.py collectstatic
@@ -154,6 +222,12 @@ STATICFILES_DIRS = [
 # Este será el directorio donde Docker copiará todos tus archivos estáticos
 STATIC_ROOT = BASE_DIR.parent / 'local-cdn' #os.path.join(BASE_DIR, 'staticfiles')
 
+STORAGES = {
+    "staticfiles": {
+        "BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage",
+    },
+}
+
 if not DEBUG:
     STATIC_ROOT = BASE_DIR / 'prod-cdn'
     
@@ -162,3 +236,4 @@ if not DEBUG:
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+

@@ -14,6 +14,7 @@
     <body>
       <!-- Navegación -->
       {% include 'nav/navbar.html' %}
+      {% include 'base/messages.html' with messages=messages %}
       <!-- Contenido -->
       {% block content %}{% endblock %}
       <!-- Javascript -->

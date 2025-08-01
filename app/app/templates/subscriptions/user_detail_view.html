@@ -1,0 +1,22 @@
+{% extends "app/base.html" %}
+
+{% block content %}
+    <h1>Welcome to your Subscription</h1>
+
+    <form action="" method="post">
+        {% csrf_token %}
+        <p>Subscription ID: {{ subscription.id }}</p>
+        <button type="submit">Refresh</button>
+    </form>
+
+    <a href="{{ subscription.get_cancel_url }}">Cancel Membership</a>
+
+    <p>Plan name: {{ subscription.plan.name }}</p>
+    <p>Status: {{ subscription.status|title}}</p>
+    <p>Membership Age: {{ subscription.original_period_start}}</p>
+    <p>Current period start: {{ subscription.current_period_start }}</p>
+    <p>Current period end: {{ subscription.current_period_end|timeuntil }} ({{ subscription.current_period_end }})</p>
+    
+
+{% endblock %}
+{% load static %}
