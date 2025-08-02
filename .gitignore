@@ -10,3 +10,5 @@ test.txt
 app/staticfiles/vendors
 # Ignore local static files root
 local-cdn/
+# Ignore knowledge files
+knowledge
