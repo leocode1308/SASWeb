@@ -65,7 +65,6 @@ if DEBUG:
         "localhost"
     ]
 
-
 # Application definition
 
 INSTALLED_APPS = [
@@ -126,7 +125,6 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'app.wsgi.application'
 
-
 # Database
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
 
@@ -137,20 +135,24 @@ DATABASES = {
     }
 }
 
-CONN_MAX_AGE = config('CONN_MAX_AGE', cast=int, default=30)
+CONN_MAX_AGE = config('CONN_MAX_AGE', cast=int, default=300)
 DATABASE_URL = config('DATABASE_URL', default='sqlite:///db.sqlite3', cast=str)
-
 
 if DATABASE_URL is not None:
     import dj_database_url
 
-    DATABASES = {'default': dj_database_url.config(
-                    default=DATABASE_URL,
-                    conn_max_age = CONN_MAX_AGE, # 30,
-                    conn_health_checks = True
-                )
-            }
+    DATABASES = {
+        'default': dj_database_url.config(
+            default=DATABASE_URL,
+            conn_max_age=0,
+            conn_health_checks=True
+        )
+    }
 
+    DATABASES['default']['TEST'] = {
+        'CONN_MAX_AGE': 0,
+        'OPTIONS': {'isolation_level': 'read_committed'}
+    }
 
 # Password validation
 # https://docs.djangoproject.com/en/5.2/ref/settings/#auth-password-validators
@@ -181,7 +183,6 @@ AUTHENTICATION_BACKENDS = [
 
     # `allauth` specific authentication methods, such as login by email
     'allauth.account.auth_backends.AuthenticationBackend',
-
 ]
 
 
@@ -203,7 +204,6 @@ SOCIALACCOUNT_PROVIDERS = {
     }
 
 }
-
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.2/howto/static-files/
@@ -231,7 +231,6 @@ STORAGES = {
 if not DEBUG:
     STATIC_ROOT = BASE_DIR / 'prod-cdn'
     
-
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
 
