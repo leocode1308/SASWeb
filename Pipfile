@@ -20,6 +20,7 @@ django-allauth = {extras = ["socialaccount"], version = "*"}
 django-allauth-ui = "*"
 django-widget-tweaks = "*"
 slippers = "*"
+stripe = "*"
 
 [dev-packages]
 
