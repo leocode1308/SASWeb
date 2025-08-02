@@ -32,5 +32,5 @@ jobs:
       - name: Django tests
         working-directory: ./app
         run: |
-          pipenv run python manage.py test
+          pipenv run env DATABASE_URL="${{ secrets.NEON_DATABASE_URL }}" python manage.py test --noinput --keepdb
           
