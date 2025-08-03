@@ -52,6 +52,10 @@ jobs:
       - name: Install dependencies with Pipenv
         working-directory: ./app
         run: pipenv install --dev
+      - name: Django Migrates DB
+        working-directory: ./app
+        run: |
+          python manage.py migrate
       - name: Django tests
         working-directory: ./app
         run: |
