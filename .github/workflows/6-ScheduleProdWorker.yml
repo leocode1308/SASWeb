@@ -3,7 +3,7 @@ name: 6-Schedule Production Worker
 on:
   workflow_dispatch:
   push:
-    branch:
+    branches:
       - main
   schedule:
     - cron: '0 1,12 * * *'
@@ -58,16 +58,16 @@ jobs:
       - name: Django Migrates DB
         working-directory: ./app
         run: |
-          python manage.py migrate
+          pipenv run python manage.py migrate
 
       - name: Django User Sync Stripe Subscriptions
         if: github.event.schedule != '0 1,12 * * *'
         working-directory: ./app
         run: |
-          python manage.py sync_user_subs --day-start 0 --day-end 1
+          pipenv run python manage.py sync_user_subs --day-start 0 --day-end 1
 
       - name: Django User Clear Dangling Stripe Subscriptions
         working-directory: ./app
         if: github.event.schedule == '0 4 1 * *'
         run: |
-          python manage.py sync_user_subs --clear-dangling
+          pipenv run python manage.py sync_user_subs --clear-dangling
