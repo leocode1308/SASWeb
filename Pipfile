@@ -21,6 +21,7 @@ django-allauth-ui = "*"
 django-widget-tweaks = "*"
 slippers = "*"
 stripe = "*"
+pandas = "*"
 
 [dev-packages]
 
