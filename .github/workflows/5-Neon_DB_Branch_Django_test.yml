@@ -51,7 +51,7 @@ jobs:
           python -m pip install pipenv
       - name: Install dependencies with Pipenv
         working-directory: ./app
-        run: pipenv install --dev
+        run: pipenv install --dev --skip-lock
       - name: Django Migrates DB
         working-directory: ./app
         run: |
