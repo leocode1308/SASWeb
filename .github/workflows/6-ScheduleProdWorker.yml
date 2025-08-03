@@ -19,36 +19,51 @@ jobs:
     steps:
       - name: Checkout Code
         uses: actions/checkout@v4
+
       - name: Setup Python
         uses: actions/setup-python@v5
         with:
           python-version: '3.12'
+
       - name: Setup Node
         uses: actions/setup-node@v4
         with: 
-          node-version: "20.11"   
+          node-version: "20.11"
+
       - name: Install Neon CLI
         run: |
           npm install -g neonctl
+
       - name: Database URL Env Val for  new Github Actions branch
         run: |
           MY_NEON_CONN_STRING=$(neonctl connection-string --branch "${{ env.NEON_PROD_BRANCH }}" --project-id "${{ env.NEON_PROJECT_ID }}")
           echo "DATABASE_URL=$MY_NEON_CONN_STRING" >> $GITHUB_ENV
+
       - name: Setup Django Secret Key
         run: |
           MY_GEN_KEY=$(openssl rand -base64 32)
           echo "DJANGO_SECRET_KEY=$MY_GEN_KEY" >> $GITHUB_ENV
+
       - name: Install Pipenv # Paso para instalar Pipenv
         run: |
           python -m pip install pipenv
+
       - name: Install dependencies with Pipenv
         working-directory: ./app
         run: pipenv install --dev
+
+      - name: Django Migrates DB
+        if: github.event.schedule != '0 1,12 * * *'
+        working-directory: ./app
+        run: |
+          python manage.py migrate
+
       - name: Django User Sync Stripe Subscriptions
         if: github.event.schedule != '0 1,12 * * *'
         working-directory: ./app
         run: |
           python manage.py sync_user_subs --day-start 0 --day-end 1
+
       - name: Django User Clear Dangling Stripe Subscriptions
         working-directory: ./app
         if: github.event.schedule == '0 4 1 * *'
