@@ -49,17 +49,21 @@ jobs:
       - name: Install Pipenv # Paso para instalar Pipenv
         run: |
           python -m pip install pipenv
+      
       - name: Install dependencies with Pipenv
         working-directory: ./app
         run: pipenv install --dev #--skip-lock
+      
       - name: Django Migrates DB
         working-directory: ./app
         run: |
-          python manage.py migrate
+          pipenv run python manage.py migrate
+      
       - name: Django tests
         working-directory: ./app
         run: |
           pipenv run env DATABASE_URL="${{ secrets.NEON_DATABASE_URL }}" python manage.py test --noinput --keepdb
+      
       - name: Clean Up Step
         continue-on-error: true
         run: |
